@@ -12,6 +12,8 @@ const int ATOMIZER_FAN_PIN = A0;
 const int EXTRACTION_FAN_PIN = 9;
 const int ATOMIZER_RIGHT_PIN = 6;
 const int ATOMIZER_LEFT_PIN = 5;
+const int DEBUG_LED_PIN = 13;
+
 
 const int ATOMIZATION_FAN_SPEED = 255;
 const int EXTRACTION_FAN_SPEED = 255;
@@ -45,6 +47,7 @@ long last_atomization_update = 0;
 bool atomize_left = false;
 bool atomize_right = false;
 
+bool debug_led_on = false;
 
 enum Mode current_mode = OFF;
 
@@ -54,6 +57,7 @@ void setup()
   pinMode(ATOMIZER_RIGHT_PIN, OUTPUT);
   pinMode(ATOMIZER_FAN_PIN, OUTPUT);
   pinMode(EXTRACTION_FAN_PIN, OUTPUT);
+  pinMode(DEBUG_LED_PIN, OUTPUT);
   Serial.begin(115200); // Open COM PORT => WARNING : if NANO EVERY think to enable DTR while opening COM port on Unity!!
   while (!Serial) {
       ;
@@ -94,6 +98,8 @@ void loop()
   while (Serial.available() > 0)
   {
     serialReceived = Serial.readStringUntil('\n');
+    debug_led_on = !debug_led_on;
+    digitalWrite(DEBUG_LED_PIN, debug_led_on);
     Serial.print("Received `");
     Serial.print(serialReceived);
     Serial.println("`");
